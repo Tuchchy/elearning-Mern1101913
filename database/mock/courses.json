@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "code": "CS101",
+    "name": "Introduction to Computer Science",
+    "credits": 3,
+    "semester": "Fall 2024",
+    "prerequisites": [],
+    "description": "Fundamentals of computer science: algorithms, programming basics, and computational thinking.",
+    "instructor": "Dr. Ada Lovelace",
+    "createdAt": "2024-05-01T09:00:00Z",
+    "updatedAt": "2024-07-01T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "code": "ML201",
+    "name": "Machine Learning Basics",
+    "credits": 4,
+    "semester": "Spring 2025",
+    "prerequisites": [1],
+    "description": "Intro to supervised and unsupervised learning, neural networks, and real-world applications.",
+    "instructor": "Prof. Alan Turing",
+    "createdAt": "2024-05-03T11:20:00Z",
+    "updatedAt": "2024-07-02T11:30:00Z"
+  },
+  {
+    "id": 3,
+    "code": "JS202",
+    "name": "Advanced JavaScript",
+    "credits": 3,
+    "semester": "Summer 2024",
+    "prerequisites": [1],
+    "description": "Async programming, closures, prototypal inheritance, and frontend frameworks.",
+    "instructor": "Dr. Emily Carter",
+    "createdAt": "2024-05-04T15:40:00Z",
+    "updatedAt": "2024-07-03T12:40:00Z"
+  },
+  {
+    "id": 4,
+    "code": "UX301",
+    "name": "User Experience Design",
+    "credits": 2,
+    "semester": "Fall 2024",
+    "prerequisites": [],
+    "description": "Human-centered design, prototyping, user research, and usability testing.",
+    "instructor": "Ms. Grace Hopper",
+    "createdAt": "2024-05-05T17:00:00Z",
+    "updatedAt": "2024-07-04T14:20:00Z"
+  },
+  {
+    "id": 5,
+    "code": "DB105",
+    "name": "Database Systems",
+    "credits": 3,
+    "semester": "Spring 2025",
+    "prerequisites": [1],
+    "description": "Relational databases, SQL, normalization, and data modeling.",
+    "instructor": "Dr. Edgar Codd",
+    "createdAt": "2024-05-06T09:30:00Z",
+    "updatedAt": "2024-07-05T16:30:00Z"
+  }
+]
