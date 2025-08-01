@@ -1,0 +1,133 @@
+:root {
+    --prim: #f00;
+}
+
+/* add global like container that have same width, same width responsive, same padding but not layout */
+
+body {
+    margin: 0;
+}
+nav {
+    position: sticky;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    font-family: 'Segoe UI', sans-serif;
+}
+section, footer {
+    background-color: #2563eb;
+}
+.navbar-container {
+    min-width: 90%;
+    max-width: 1440px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    padding: 0 1.5rem;
+}
+.section-container {
+    min-width: 90%;
+    max-width: 1440px;
+    margin: auto;
+    padding: 1rem 0;
+}
+.footer-container {
+    min-width: 90%;
+    max-width: 1440px;
+    margin: auto;
+    padding: 1rem 0;
+}
+
+.clr-orange {
+    display: inline-block;
+    color: #ff7b15;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2563eb;
+    text-decoration: none;
+    letter-spacing: .5px;
+}
+
+.navbar-logo img {
+    width: 70px;
+
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 2em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-menu li a {
+    text-decoration: none;
+    color: #222;
+    padding: 8px 14px;
+    border-radius: 0.5em;
+    transition: background 0.17s, color 0.17s;
+    font-weight: 500;
+    font-size: 1.05em;
+}
+
+.navbar-menu li a:hover,
+.navbar-menu li a[aria-current="page"] {
+    background: #2563eb18;
+    color: #2563eb;
+    font-weight: bold;
+}
+
+/* Hamburger for mobile */
+.navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.navbar-toggle span {
+    display: block;
+    width: 26px;
+    height: 3px;
+    background: #2563eb;
+    margin: 6px 0;
+    border-radius: 2px;
+    transition: all .23s;
+}
+
+@media (max-width: 768px) {
+    .navbar-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #fff;
+        flex-direction: column;
+        width: 180px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.11);
+        border-radius: 0 0 12px 12px;
+        padding: 1em 0;
+        z-index: 99;
+        gap: 0;
+    }
+
+    .navbar-menu.open {
+        display: flex;
+    }
+
+    .navbar-container {
+        position: relative;
+    }
+
+    .navbar-toggle {
+        display: block;
+    }
+}
