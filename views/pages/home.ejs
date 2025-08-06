@@ -1,0 +1,44 @@
+<% layout('layout.ejs') %>
+
+<header>
+    <div>
+        <h1>ยินดีต้อนรับสู่ <div class="clr-orange">SUT ACT+</div></h1>
+        <h2>
+            แพลตฟอร์มเพื่อการพัฒนาศักยภาพของนักศึกษา มหาวิทยาลัยเทคโนโลยีสุรนารี
+            <br>เรียนรู้ เข้าร่วมกิจกรรม รับเกียรติบัตร และสร้าง Transcript ของคุณได้ที่นี่
+        </h2>
+    </div>
+</header>
+
+<section class="about">
+    <div class="inner__about">
+        <div class="about-items">
+            <img src="images/pages/home/section-img1.png" alt="img" class="about-img">
+            <p>เรียนนอกหลักสูตรออนไลน์ ดูคลิป ทำแบบทดสอบ เพื่อรับเกียรติบัตร</p>
+        </div>
+        <div class="about-items">
+            <img src="images/pages/home/section-img2.png" alt="img" class="about-img">
+            <p>รับเกียรติบัตรอัตโนมัติระบบส่งใบรับรองให้ทันทีหลังจบกิจกรรม</p>
+        </div>
+        <div class="about-items">
+            <img src="images/pages/home/section-img3.png" alt="img" class="about-img">
+            <p>เข้าร่วมกิจกรรมได้ง่าย สมัครผ่านระบบ ตรวจสอบชั่วโมงได้</p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <!-- recommended course -->
+    <h2 class="clr-orange">หลักสูตรยอดนิยม</h2>
+    <div>
+        <%- data.d1 %>
+        <%- data.d2.d21 %>
+        <%- data.d2.d22 %>
+    </div> 
+</section>
+
+<section>
+    <!-- popular course -->
+    <h2 class="clr-orange">หลักสูตรที่ได้รับความนิยม</h2>
+</section>
+

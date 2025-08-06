@@ -1,5 +1,6 @@
 // import mysql from "mysql";
 const mysql = require('mysql2/promise')
+require('dotenv').config()
 
 // กรณีปกติ
 // let connection = mysql.createConnection({
@@ -10,10 +11,10 @@ const mysql = require('mysql2/promise')
 // })
 
 let connection = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '368271',
-    database: 'elearn_app',
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.DBPWD,
+    database: process.env.DATABASE,
     waitForConnections: true,
     connectionLimit: 10,
 })

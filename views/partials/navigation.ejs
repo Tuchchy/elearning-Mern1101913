@@ -1,0 +1,43 @@
+<nav aria-label="Main navigation">
+    <div class="navbar-container">
+        <a href="/" class="navbar-logo">
+            <img src="/images/logo.png" alt="sut" />
+        </a>
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="navbar-menu" id="navbarMenu">
+            <li>
+                <a href="/activity" <% if (active==='activity' ) { %> aria-current="page" <% } %>>Activity</a>
+            </li>
+            <li>
+                <a href="/selflearn" <% if (active==='selflearn' ) { %> aria-current="page" <% } %>>Self-Learning</a>
+            </li>
+            <% if (locals.isLogin) { %>
+                <li>
+                    <a href="/login" <% if (active==='login' ) { %> aria-current="page" <% } %>>Login</a>
+                </li>
+                <li>
+                    <a href="/register" <% if (active==='register' ) { %> aria-current="page" <% } %>>Register</a>
+                </li>
+            <% } else { %>
+                <li>
+                    <a href="/profile" <% if (active==='profile' ) { %> aria-current="page" <% } %>>
+                        <img src="" alt="user/profile">
+                    </a>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+    <script>
+        // Pure JS for hamburger menu
+        document.getElementById('navbarToggle').onclick = function () {
+            const menu = document.getElementById('navbarMenu');
+            const expanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !expanded);
+            menu.classList.toggle('open');
+        };
+    </script>
+</nav>

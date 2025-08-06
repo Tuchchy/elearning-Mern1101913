@@ -1,0 +1,42 @@
+<% layout('layout') %>
+
+<section>
+    <div class="section-container">
+        <h2>Test Form</h2>
+        <form id="register">
+            <h3>form user</h3>
+            <input id="username" name="username" type="text" placeholder="username">
+            <input id="email" name="email" type="email" placeholder="email">
+            <input id="password" name="password" type="password" placeholder="password">
+            <input id="profile" name="profile" type="file" placeholder="profile image">
+            <input type="submit" value="sign up">
+        </form>
+    </div>
+</section>
+
+<script>
+    // fetch
+    document.getElementById('register').addEventListener('submit', async (e)=>{
+        e.preventDefault()
+
+        const form = document.querySelector('#register')
+        const formData = new FormData(form)
+       
+        // dont forget name="" in form when use FormData
+        // when use async function just use try/catch, await and NO .then .catch .finally
+        // try/catch async func != Promise.then().catch().finally // just a 2 way to make async code
+        try {
+            const res = await fetch('/register', {
+                method: 'POST',
+                body: formData
+            })
+            const data = await res.json()
+            console.log(data);
+        } catch (error) {
+            console.log('somethings went wrong at register submit event');
+            console.log(error);
+        }
+        
+        
+    })
+</script>

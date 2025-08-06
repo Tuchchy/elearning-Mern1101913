@@ -1,0 +1,33 @@
+<% layout('layout') %>
+
+<section>
+    <div class="section-container">
+        <form id="loginForm" method="post">
+            <input type="text" name="username" id="username">
+            <input type="password" name="password" id="password">
+            <input type="email" name="email" id="email">
+            <input type="submit" value="login">
+        </form>
+    </div>
+</section>
+
+<script>
+    let accessToken = null;
+    document.querySelector("#loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault(); // prevent form default action
+        
+        const username = document.querySelector("#username").value;
+        const password = document.querySelector("#password").value;
+
+        const res = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include", // to send cookies
+            body: JSON.stringify({ username })
+        });
+
+        const data = await res.json();
+        console.log("accessToken:", data.accessToken);
+    });
+
+</script>

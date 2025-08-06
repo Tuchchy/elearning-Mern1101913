@@ -31,13 +31,13 @@ section, footer {
     min-width: 90%;
     max-width: 1440px;
     margin: auto;
-    padding: 1rem 0;
+    padding: 1rem 1.5rem;
 }
 .footer-container {
     min-width: 90%;
     max-width: 1440px;
     margin: auto;
-    padding: 1rem 0;
+    padding: 1rem 1.5rem;
 }
 
 .clr-orange {
