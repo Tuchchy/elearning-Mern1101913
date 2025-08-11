@@ -1,0 +1,98 @@
+Date : 2025-08-10 18:54:03
+Directory : c:\Users\tuchchapon\Desktop\elearning-app-mern1913
+Total : 43 files,  5402 codes, 98 comments, 232 blanks, all 5732 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          4 |      4,000 |          0 |          4 |      4,004 |
+| JavaScript |         18 |        708 |         81 |        119 |        908 |
+| HTML       |         12 |        389 |          6 |         66 |        461 |
+| PostCSS    |          5 |        294 |         11 |         41 |        346 |
+| Properties |          1 |          7 |          0 |          2 |          9 |
+| Markdown   |          3 |          4 |          0 |          0 |          4 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                  | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                     |         43 |      5,402 |         98 |        232 |      5,732 |
+| . (Files)                                                                             |          6 |      4,026 |         18 |         26 |      4,070 |
+| configs                                                                               |          1 |         11 |         42 |          5 |         58 |
+| controllers                                                                           |          3 |        203 |          3 |         44 |        250 |
+| database                                                                              |          3 |        204 |          0 |          3 |        207 |
+| database (Files)                                                                      |          1 |          0 |          0 |          1 |          1 |
+| database\mock                                                                         |          2 |        204 |          0 |          2 |        206 |
+| middlewares                                                                           |          2 |         22 |          2 |          6 |         30 |
+| public                                                                                |          7 |        296 |         11 |         41 |        348 |
+| public\pdf                                                                            |          1 |          1 |          0 |          0 |          1 |
+| public\pdf\assets                                                                     |          1 |          1 |          0 |          0 |          1 |
+| public\styles                                                                         |          5 |        294 |         11 |         41 |        346 |
+| public\styles (Files)                                                                 |          1 |        147 |          4 |         17 |        168 |
+| public\styles\pages                                                                   |          4 |        147 |          7 |         24 |        178 |
+| public\videos                                                                         |          1 |          1 |          0 |          0 |          1 |
+| public\videos\assets                                                                  |          1 |          1 |          0 |          0 |          1 |
+| routes                                                                                |          5 |        151 |          6 |         22 |        179 |
+| routes (Files)                                                                        |          4 |         28 |          0 |         11 |         39 |
+| routes\pages                                                                          |          1 |        123 |          6 |         11 |        140 |
+| tests                                                                                 |          4 |        100 |         10 |         19 |        129 |
+| tests (Files)                                                                         |          1 |          7 |          3 |          2 |         12 |
+| tests\performance                                                                     |          1 |         51 |          6 |         13 |         70 |
+| tests\unit                                                                            |          2 |         42 |          1 |          4 |         47 |
+| views                                                                                 |         12 |        389 |          6 |         66 |        461 |
+| views (Files)                                                                         |          1 |         17 |          0 |          0 |         17 |
+| views\pages                                                                           |          9 |        325 |          6 |         64 |        395 |
+| views\partials                                                                        |          2 |         47 |          0 |          2 |         49 |
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                              | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\.env                               | Properties |          7 |          0 |          2 |          9 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\Readme.md                          | Markdown   |          2 |          0 |          0 |          2 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\configs\db.js                      | JavaScript |         11 |         42 |          5 |         58 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\controllers\activity.controller.js | JavaScript |        104 |          1 |         19 |        124 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\controllers\course.controller.js   | JavaScript |         48 |          2 |         14 |         64 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\controllers\student.controller.js  | JavaScript |         51 |          0 |         11 |         62 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\database\db.js                     | JavaScript |          0 |          0 |          1 |          1 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\database\mock\courses.json         | JSON       |         62 |          0 |          1 |         63 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\database\mock\students.json        | JSON       |        142 |          0 |          1 |        143 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\index.js                           | JavaScript |        210 |         18 |         20 |        248 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\middlewares\authentication.js      | JavaScript |          9 |          2 |          2 |         13 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\middlewares\uploadImgActivity.js   | JavaScript |         13 |          0 |          4 |         17 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\package-lock.json                  | JSON       |      3,758 |          0 |          1 |      3,759 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\package.json                       | JSON       |         38 |          0 |          1 |         39 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\public\pdf\assets\detail.md        | Markdown   |          1 |          0 |          0 |          1 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\public\styles\pages\activity.css   | PostCSS    |         44 |          1 |          8 |         53 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\public\styles\pages\courses.css    | PostCSS    |         47 |          5 |          8 |         60 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\public\styles\pages\home.css       | PostCSS    |         56 |          0 |          7 |         63 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\public\styles\pages\selflearn.css  | PostCSS    |          0 |          1 |          1 |          2 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\public\styles\style.css            | PostCSS    |        147 |          4 |         17 |        168 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\public\videos\assets\detail.md     | Markdown   |          1 |          0 |          0 |          1 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\routes\activity.route.js           | JavaScript |         10 |          0 |          3 |         13 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\routes\course.route.js             | JavaScript |          9 |          0 |          3 |         12 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\routes\pages\page.js               | JavaScript |        123 |          6 |         11 |        140 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\routes\student.route.js            | JavaScript |          9 |          0 |          4 |         13 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\routes\user.route.js               | JavaScript |          0 |          0 |          1 |          1 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\server.js                          | JavaScript |         11 |          0 |          2 |         13 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\tests\1_unit-tests.js              | JavaScript |          7 |          3 |          2 |         12 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\tests\performance\activity.test.js | JavaScript |         51 |          6 |         13 |         70 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\tests\unit\activity.test.js        | JavaScript |         26 |          0 |          2 |         28 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\tests\unit\page.test.js            | JavaScript |         16 |          1 |          2 |         19 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\layout.ejs                   | HTML       |         17 |          0 |          0 |         17 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\activities.ejs         | HTML       |         79 |          1 |         18 |         98 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\activity.ejs           | HTML       |         39 |          1 |          7 |         47 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\course.ejs             | HTML       |         36 |          2 |          7 |         45 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\courses.ejs            | HTML       |         55 |          0 |          7 |         62 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\home.ejs               | HTML       |         36 |          2 |          6 |         44 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\login.ejs              | HTML       |         27 |          0 |          6 |         33 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\profile.ejs            | HTML       |          1 |          0 |          2 |          3 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\selflearn.ejs          | HTML       |         16 |          0 |          4 |         20 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\pages\testform.ejs           | HTML       |         36 |          0 |          7 |         43 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\partials\footer.ejs          | HTML       |          4 |          0 |          2 |          6 |
+| c:\Users\tuchchapon\Desktop\elearning-app-mern1913\views\partials\navigation.ejs      | HTML       |         43 |          0 |          0 |         43 |
+| Total                                                                                 |            |      5,402 |         98 |        232 |      5,732 |
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

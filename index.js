@@ -1,7 +1,6 @@
 const express = require('express')
 const engine = require('ejs-mate')
 const multer = require('multer')
-const db = require('./configs/db')
 const cookieParser = require('cookie-parser')
 /* import security module */
 // const helmet = require('helmet')
@@ -9,11 +8,15 @@ const cors = require('cors')
 const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken')
 
-const courses = require('./database/mock/courses.json')
-const students = require('./database/mock/students.json')
+const swaggerDocs = require('./configs/swagger')
+
 const { authMiddleware } = require('./middlewares/authentication')
-const { pageSetUp } = require('./controllers/page')
+const { pageSetUp } = require('./routes/pages/page')
 const { getStudent } = require('./controllers/student.controller')
+const { router: studentRouter } = require('./routes/student.route')
+const { router: activityRouter } = require('./routes/activity.route')
+const { router: coursesRouter } = require('./routes/course.route')
+
 require('dotenv').config()
 
 let errorCount = 0
@@ -23,17 +26,15 @@ const app = express()
 app.engine('ejs', engine)
 app.set('view engine', 'ejs')
 
-// app.use(helmet())
 app.use('/api', express.json())
 app.use(cookieParser())
-// app.use(bodyParser)
 app.use(cors({
     origin: "*", // 👈 exact origin (no '*'), http://127.0.0.1:5500
     credentials: true
 }))
 app.use(express.static('public'))
+app.use(express.json())
 
-// need logic to store for each course id
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         console.log('base url: ' + req.baseUrl.includes('activity'));// not work, 2 below work
@@ -57,21 +58,11 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage })
 
-pageSetUp(app)
-
-// API ZONE
-// connect database then seperate all to diff dir
 app.get('/api/dbtest', async (req, res) => {
     const [rows] = await db.execute('SELECT 1+1 AS solution');
     console.log(`The solution is: ${rows[0].solution}`);
-    // ใช้ chatgpt ในการสอนให้ทำ CRUD database/api >5 hours
-    //      แล้วไป เรื่องพวก ENUM, และเทคนิคอื่นๆต่อ     <2 hours
-    //      แล้วไป transaction/procedure/index    >2 hours
-    //      แล้วไป auth และความปลอดภัย            >2 hours
     const [rows1] = await db.execute('SELECT * FROM new_data')
     res.json({ solution: rows1 });
-    // const idk = await db.execute('SELECT * FROM new_data');
-    // res.json({rows: idk})
 })
 
 // gen 2 keys, insert to refresh table
@@ -89,17 +80,13 @@ function createTokens(userId) {
     )
     return { accessToken, refreshToken }
 }
-/* 🛠🛠🛠, 
-problem: 
- * can generate many token in 1 user by login 
- * navigation isLogin not work
-*/
+/* 🛠🛠🛠, Let give LOGIN For Only my Teams, not app users */
 // check user/pwd if yes gen 2 keys
-app.post('/login', express.json(), async (req, res) => {
+app.post('/login', async (req, res) => {
     const { username } = req.body
     try {
         const [rows] = await db.execute(
-            `SELECT * FROM Users WHERE username=?`, 
+            `SELECT * FROM Users WHERE username=?`,
             [username]
         )
         if (!rows.length) {
@@ -117,7 +104,7 @@ app.post('/login', express.json(), async (req, res) => {
         res.status(500).json(error)
     }
 })
-// check refresh -> get new 2 key -> replace old refreshToken cookie and delete row in refresh table
+// check refresh -> get new 2 key -> recoursePlace old refreshToken cookie and delete row in refresh table
 app.post('/refresh-token', async (req, res) => {
     const token = req.cookies.refreshToken
     if (!token) {
@@ -183,245 +170,101 @@ app.post('/logout', async (req, res) => {
     })
 })
 
-//CRUD students
-app.get('/api/students', getStudent)
-app.get('/api/students/:id', (req, res) => {
-    const { id } = req.params
-    const student = students.find(s => s.id == id)
-    res.json(student)
-})
-app.post('/api/students', (req, res) => {
-    const field = req.body
-    const requireField = ["studentNumber", "name", "year", "major", "dob", "email", "password", "gpa", "status"]
-    const createAt = new Date()
+pageSetUp(app)
 
-    const obj = Object.entries(field)
-    let iter = 0
-    for (const rf of requireField) {
-        if (!rf.includes(obj[iter][0])) {
-            return res.status(400).json({ error: `${rf} is required` })
+app.use('/api/activity', activityRouter)
+app.use('/api/courses', coursesRouter)
+
+// button to add module, inside module have button to add assets
+// when submit it count all of it, except an empty form
+const { upload: uploadc } = require('./middlewares/uploadImgCourse')
+const db = require('./configs/db')
+app.post('/api/courses', uploadc.array('poster'), async (req, res) => {
+    // add multiple upload array
+    const conn = db.getConnection()
+    try {
+        (await conn).beginTransaction()
+
+        const allowedCourseField = ['title', 'detail', 'imageUrl']
+        const cfield = [] // req.body
+        const mfield = [] // req.body.modules
+        const afield = [] // req.body.modules.assets
+
+        let rmrows
+        let rarows
+
+        let imageUrl = req?.file?.fieldname
+        if (!imageUrl) {
+            imageUrl = `/images/uploads/courses/default${(Math.floor(Math.random() * 2) + 1)}.png`
         }
-        iter++
-    }
 
-    const student = students.push({
-        name: "...i'm lazy to fill lol",
-        enrolledCourseIds: [],
-        createAt: createAt.toDateString()
-    })
-    console.log(student);
-    res.json({ student: students[students.length - 1], createAt })
-})
-app.patch('/api/students/:id', authMiddleware, (req, res) => {
-    const { id } = req.params
-    const allowedField = ["name", "year", "major", "dob", "email", "password", "gpa", "status", "enrolledCourseIds"]
-
-    const updates = Object.keys(req.body)
-    for (const u of updates) {
-        if (!allowedField.includes(u)) {
-            return res.status(400).json({ message: `${res.statusMessage}, ${af} this field is not allow or not exists, or your json body is empty` })
-        }
-    }
-
-    const student = students.find(s => s.id == id)
-    for (const b in req.body) {
-        student[b] = req.body[b]
-    }
-
-    res.json(student);
-})
-app.delete('/api/students/:id', (req, res) => {
-    const { id } = req.params
-    const student = students.find(s => s.id == id)
-    console.log(`delete student ${student.name}`);
-    res.json({ deleted: student })
-})
-
-//CRUD activity
-app.get('/api/activity', async (req, res) => {
-    try {
-        const [rows] = await db.execute('SELECT * FROM Activities')
-        res.json({ rows })
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: error.message })
-    }
-})
-app.get('/api/activity/:id', async (req, res) => {
-    try {
-        const [row] = await db.execute('SELECT * FROM Activities WHERE id = ?', [req.params.id])
-        res.json({ row })
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: error.message })
-    }
-})
-app.post('/api/activity', upload.single('poster'), async (req, res) => {
-    console.log('AT /api/activity');
-
-    const { title, content, detail, lecturer, start_date, end_date } = req.body
-    const imageUrl = `/images/uploads/activities/${req.file.filename}`;
-    try {
-        const [result] = await db.execute(
-            'INSERT INTO Activities(title, content , detail, imageUrl, lecturer, start_date, end_date) VALUES (?,?,?,?,?,?,?)',
-            [title, content, detail, imageUrl, lecturer, start_date, end_date]
-        )
-        res.status(201).json({ result })
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error })
-    }
-})
-app.patch('/api/activity/:id', upload.single('poster'), async (req, res) => {
-    console.log('AT /api/activity/:id');
-    const field = []
-    const value = []
-    debugger;
-    if (!req.file) {
-        console.log(`image isn't update, file: ${req.file}`);
-    } else {
-        value.push(`/images/uploads/activities/${req.file.filename}`)
-        field.push(`imageUrl=?`)
-    }
-    debugger;
-
-    for (const key in req.body) {
-        let t = req.body[key].trim()
-        console.log(t);
-        
-        if (t != '') { // nah i just get it from type 'forin'
-            console.log(t);
-            const element = req.body[key];
-            value.push(element)
-            field.push(`${key}=?`)
-        }
-    }
-
-    try {
-        debugger;
-        if (field.length == 0 && value.length == 0) { // this is not work why?
-            console.log(`UPDATE Activities SET ${field.join(',')} WHERE id=?\n`, [...value, req.params.id]);
-
-            const [result] = await db.execute(
-                `UPDATE Activities SET ${field.join(',')} WHERE id=?`,
-                [...value, req.params.id]
-            )
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Activities not exists' })
+        allowedCourseField.forEach(c => {
+            if (req.body[c] != undefined) {
+                cfield.push(c)
             }
+        });
 
-            // delete image file
-            const [rows] = db.execute(
-                `SELECT * FROM Users WHERE id=?`,
-                [req.params.id]
-            )
-            const oldImg = rows[0].imageUrl
-            if (req.file && oldImg) {
-                const fs = require('fs').promises // the path of this file
-                try {
-                    await fs.unlink('public' + oldImg) // fs start with this file path so it can go to /public, same as when node server.js
-                } catch (error) {
-                    console.log(error);
+        const [crows] = await db.execute(
+            `INSERT INTO Courses(${cfield.join(',')}) 
+             VALUES (${'?,'.repeat(cfield.length).slice(0,-1)})`,
+            [req.body.id, title, detail, imageUrl, 1]
+        )
+
+        if (Array.isArray(req.body.modules)) {
+            const allowedModuleField = ['course_id' ,'title', 'content_type', 'content', 'position']
+        
+            for (const module of req.body.modules) {
+
+                 allowedModuleField.forEach(m => {
+                    if (module[m] != undefined) {
+                        mfield.push(m)
+                    }
+                });
+                
+                const [mrows] = await db.execute(
+                    `INSERT INTO CourseModules(${mfield.join(',')}) 
+                    VALUES (${'?,'.repeat(mfield.length).slice(0,-1)})`,
+                    [req.body.modules.id, title, detail, imageUrl, 1]
+                )
+                rmrows = mrows
+                if (Array.isArray(module.assets)) {
+                    const allowedAssetFields = ['cmid', 'title', 'asset_type', 'asset_url', 'is_download']
+
+                    for (const asset of module.assets) {
+                        
+                        allowedAssetFields.forEach(a => {
+                            if (asset[a] != undefined) {
+                                afield.push(a)
+                                // console.log(cfield,mfield,afield);
+                            }
+                        });
+
+                        const [arows] = await db.execute(
+                            `INSERT INTO CourseModuleAssets(${afield.join(',')}) 
+                             VALUES (${'?,'.repeat(afield.length).slice(0,-1)})`,
+                            [title, detail, imageUrl, 1]
+                        )
+                        rarows = arows
+                    }
                 }
             }
-            console.log(result);
-            res.json({ result })
         }
+        (await conn).commit()
+        res.json({ message: 'course create successfull', create: {crows, rmrows, rarows} })
     } catch (error) {
         console.log(error);
+        (await conn).rollback()
         res.status(500).json({ error })
-    }
-
-})
-app.delete('/api/activity/:id', async (req, res) => {
-    // need auth for delete
-    try {
-        const [result] = await db.execute('DELETE FROM Activities WHERE id=?', [req.params.id])
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'this activities not exists' })
-        }
-        res.json({ result })
-    } catch (error) {
-        res.status(500).json({ error })
-    }
-})
-
-// course   
-// activity 
-// user     
-//CRUD elearning (courses)
-app.get('/api/courses', (req, res) => {
-    res.json(courses)
-})
-app.get('/api/courses/:id', (req, res) => {
-    const { id } = req.params
-    const course = courses.find(c => c.id == id)
-    res.json(course)
-})
-app.post('/api/courses', (req, res) => {
-    const requiredField = ["code", "name", "credits", "semester", "description", "instructor"]
-
-    for (const rf of requiredField) {
-        if (!req.body[rf]) {
-            return res.status(400).json({ error: `${rf} is required` })
-        }
-    }
-
-    res.json({ message: "add courses success" })
-})
-app.patch('/api/courses/:id', (req, res) => {
-    const { id } = req.params
-    const field = req.body
-    const course = courses.find(c => c.id == id)
-
-    if (!course) {
-        return res.status(404).json({ error: `course not found` })
-    }
-
-    const allowedField = ["code", "name", "credits", "semester", "prerequisites", "description", "instructor"]
-    try {
-        // checking invalid body field
-        const updates = Object.keys(field)
-        for (const u of updates) {
-            console.log(u);
-            if (!allowedField.includes(u)) {
-                return res.status(400).json({ error: `unknow field ${rf}` })
-            }
-        }
-    } catch (error) {
-        res.status(500).json({ message: "json body may empty", error })
-    }
-
-    // not update yet
-    res.json({ message: "update success", updatedAt: new Date(), new_course: req.body, old_course: course })
-})
-app.delete('/api/courses/:id', (req, res) => {
-    const { id } = req.params
-    const course = courses.find(c => c.id == id)
-
-    if (!course) {
-        return res.status(404).json({ error: `course not found` })
-    }
-
-    res.json({ message: "course deleted!", course })
-})
-
-
-app.get('/rating', async (req,res)=>{
-    try {
-        const [rows] = await db.execute('SELECT rating FROM CourseEnrollments')
-        console.log(rows);
-        
-        res.json({ rows }) // {"rows":[]}
-    } catch (error) {
-        console.log(error);
-        
+    } finally {
+        conn.release()
     }
 })
 
 
+swaggerDocs(app)
 app.listen(process.env.PORT, () => {
     console.log(`listen at http://localhost:${process.env.PORT}/`);
+    console.log(`listen at http://localhost:${process.env.PORT}/api-docs`);
 })
 
-module.exports = {app}
+module.exports = { app }

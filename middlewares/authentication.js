@@ -4,6 +4,7 @@ function authMiddleware(req,res,next) {
     // if (!token) return res.status(401).json({ message: "Token required" });
     if (authHeader) {
         console.log(authHeader);
+        return res.redirect('/')
     }
 
     return next()

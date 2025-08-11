@@ -7,6 +7,10 @@
 body {
     margin: 0;
 }
+a {
+    display: block;
+    text-decoration: none;
+}
 nav {
     position: sticky;
     background: #fff;
@@ -14,8 +18,16 @@ nav {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     font-family: 'Segoe UI', sans-serif;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 400px;
+}
 section, footer {
-    background-color: #2563eb;
+    width: 100%;
+    /* background-color: #2563eb; */
 }
 .navbar-container {
     min-width: 90%;
@@ -31,13 +43,37 @@ section, footer {
     min-width: 90%;
     max-width: 1440px;
     margin: auto;
-    padding: 1rem 1.5rem;
+    padding: 0.2rem 1.5rem;
 }
 .footer-container {
     min-width: 90%;
     max-width: 1440px;
     margin: auto;
-    padding: 1rem 1.5rem;
+    padding: 0.2rem 1.5rem;
+}
+
+:where(.section-container, .footer-container) > .content-between{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.content-start {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.3rem;
+}
+.frame{
+    border-radius: 12px;
+    border: 1px solid #222;
+    padding: 1rem 0.6rem;
+}
+
+.profileImg{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
 }
 
 .clr-orange {
@@ -57,12 +93,12 @@ section, footer {
 
 .navbar-logo img {
     width: 70px;
-
 }
 
 .navbar-menu {
     display: flex;
-    gap: 2em;
+    align-items: center;
+    gap: 0.8em;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -76,13 +112,12 @@ section, footer {
     transition: background 0.17s, color 0.17s;
     font-weight: 500;
     font-size: 1.05em;
+    transition: color 250ms;
 }
 
 .navbar-menu li a:hover,
 .navbar-menu li a[aria-current="page"] {
-    background: #2563eb18;
     color: #2563eb;
-    font-weight: bold;
 }
 
 /* Hamburger for mobile */
@@ -97,7 +132,7 @@ section, footer {
     display: block;
     width: 26px;
     height: 3px;
-    background: #2563eb;
+    /* background: #2563eb; */
     margin: 6px 0;
     border-radius: 2px;
     transition: all .23s;

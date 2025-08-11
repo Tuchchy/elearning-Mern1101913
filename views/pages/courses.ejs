@@ -1,0 +1,65 @@
+<% layout('layout') %>
+
+<section>
+    <div class="section-container">
+        <div class="content-between">
+            <div>
+                <h2>Self Learning</h2>
+            </div>
+            <div class="content-start">
+                <form action="" method="get" class="content-start">
+                    <input type="text" placeholder="searching bar">
+                    <input type="submit" value="search">
+                </form>
+                <button>Add</button>
+            </div>
+        </div>
+        
+        <ul id="courses-list" class="card-list">
+            <% data.courses.forEach(row=> { %>
+                <li class="card">
+                    <img src="<%- row?.imageUrl || '/images/uploads/courses/default1.png' %>" alt="course">
+                    <h3><%- row.title %></h3>
+                    <p><%- row.detail %></p>
+                    <% let count = 0  %>
+                    <% data.module.forEach(m => { %>
+                        <% if (m.course_id == row.id) {count++} %>
+                    <% }); %>
+                    <p><%- count %> Lessons to learn</p>
+                    <a href="/selflearn/<%- row.id %>">View Course</a>
+                </li>
+            <% }); %>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <div class="section-container">
+        <div class="frame">
+            <form id="add-course" method="post">
+                <h3>add course</h3>
+                <input type="text" name="title" placeholder="title">
+                <input type="text" name="detail" placeholder="detail">
+                <input type="file" name="poster" placeholder="image">
+                <input type="submit" value="add">
+            </form>
+        </div>
+        
+    </div>
+</section>
+
+<script>
+    document.getElementById('add-course').addEventListener('submit', async(e)=>{
+        e.preventDefault()
+        const formData = new FormData(e.target)
+        
+        const res = fetch('/api/courses', {
+            method: 'POST',
+            body: formData
+        })
+
+        const data = await res.json()
+        console.log(data);
+        
+    })
+</script>

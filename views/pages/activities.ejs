@@ -10,18 +10,18 @@
 <section>
     <div class="section-container">
         <h1>upload poster image</h1>
-        <form id="activityForm">
+        <form id="activityForm" method="post">
             <!-- add default value from EJS render -->
-            <input type="text" name="title" value="<%- data?.title %>" placeholder="title" required><br>
-            <input type="text" name="content" value="<%- data?.content %>" placeholder="content" required><br>
-            <textarea name="detail" placeholder="details" required><%- data?.detail %></textarea><br>
-            <input type="file" name="poster" accept="image/*" required><br>
+            <input type="text" name="title" value="<%- data?.title %>" placeholder="title" required>
+            <input type="text" name="content" value="<%- data?.content %>" placeholder="content" required>
+            <textarea name="detail" placeholder="details" required><%- data?.detail %></textarea>
+            <input type="file" name="poster" accept="image/*" required>
             <div>
-                <img src="<%- data?.imageUrl %>" alt="img" width="100px">
-            </div><br>
-            <input type="number" name="lecturer" value="<%- data?.lecturer %>" placeholder="lecturer"><br>
-            <input type="datetime-local" name="start_date" value="<%- data?.start_date %>" placeholder="start date" required><br>
-            <input type="datetime-local" name="end_date" value="<%- data?.end_date %>" placeholder="end date" required><br>
+                <img src="<%- data?.imageUrl %>" alt="selected-image" width="100px">
+            </div>
+            <input type="number" name="lecturer" value="<%- data?.lecturer %>" placeholder="lecturer">
+            <input type="datetime-local" name="start_date" value="<%- data?.start_date %>" placeholder="start date" required>
+            <input type="datetime-local" name="end_date" value="<%- data?.end_date %>" placeholder="end date" required>
             <button type="submit">Submit</button>
         </form>
     </div>
@@ -75,9 +75,15 @@
                 const end = new Date(row.end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                 date.textContent = `${start} → ${end}`;
 
+                const a = document.createElement('a');
+                a.textContent = "รายละเอียด"
+                a.href = `/activity/${row.id}`
+                a.className = 'link-act-id';
+
                 cardBody.appendChild(h3);
                 cardBody.appendChild(content);
                 cardBody.appendChild(date);
+                cardBody.appendChild(a);
 
                 li.appendChild(img);
                 li.appendChild(cardBody);

@@ -25,7 +25,7 @@
             <% } else { %>
                 <li>
                     <a href="/profile" <% if (active==='profile' ) { %> aria-current="page" <% } %>>
-                        <img src="" alt="user/profile">
+                        <img class="profileImg" src="<%- locals.user ? locals.user?.imageUrl : '/images/uploads/profiles/default-user-profile.png' %>" alt="user/profile">
                     </a>
                 </li>
             <% } %>

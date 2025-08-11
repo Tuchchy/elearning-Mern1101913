@@ -1,6 +1,6 @@
 const request = require('supertest');
 const { expect } = require('chai');
-const { app } = require('../index');
+const { app } = require('../../index');
 
 describe('Activity API', () => {
     it('GET /api/activity → should return all activities', async () => {

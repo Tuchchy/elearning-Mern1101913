@@ -1,0 +1,59 @@
+/* Container list */
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Card item styling */
+.card-list li {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-list li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Image styling */
+.card-list img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+/* Card content */
+.card-list h3 {
+  font-size: 1.2rem;
+  margin: 0.8rem 1rem 0.4rem;
+  color: #333;
+}
+
+.card-list p {
+  margin: 0 1rem 1rem;
+  color: #555;
+  flex: 1;
+}
+
+/* Link as button */
+.card-list a {
+  display: block;
+  margin: 0 1rem 1rem;
+  padding: 0.6rem;
+  text-align: center;
+  background: #0077cc;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+}
+

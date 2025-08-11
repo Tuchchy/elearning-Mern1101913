@@ -2,17 +2,44 @@
 
 <section>
     <div class="section-container">
-
-        <div class="course">
-            <img src="" alt="">
-            <div class="course-info">
-                <h4>title</h4>
-                <p>details</p>
-                <p>lesson ${count}</p>
-                <p>enrolled ${count}</p>
-                <a>see detail</a>
-            </div>
+        <div class="section-container">
+            <img src="<%- courses[0].imageUrl %>" alt="course image">
+            <h2><%- courses[0].title %></h2>
+            <p><%- courses[0].detail %></p>
+            <p>By <%- courses[0].create_by %></p>
         </div>
-
     </div>
 </section>
+<!-- create form for post/update module/asset -->
+<!-- button to delete too -->
+<% modules.forEach(m => { %>
+    <section>
+        <div class="section-container">
+            <div class="section-container">
+                <div class="frame">
+                    <img src="<%- courses.imageUrl %>" alt="course image">
+                    <h3><%- m.title %></h2>
+                    <p><%- m.content %></p>
+                    <% asset.forEach(a => { %>
+                        
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </section>
+<% }); %>
+
+<section>
+    <div class="section-container">
+        <div class="section-container">
+            <% enroll.forEach(e => { %>
+                
+            <% }); %>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    
+</script>
