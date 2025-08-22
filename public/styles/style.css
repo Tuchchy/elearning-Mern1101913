@@ -18,7 +18,9 @@ nav {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     font-family: 'Segoe UI', sans-serif;
 }
-
+main {
+    position: relative;
+}
 form {
     display: flex;
     flex-direction: column;
@@ -51,8 +53,7 @@ section, footer {
     margin: auto;
     padding: 0.2rem 1.5rem;
 }
-
-:where(.section-container, .footer-container) > .content-between{
+.content-between{
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -64,10 +65,34 @@ section, footer {
     justify-content: flex-start;
     gap: 0.3rem;
 }
-.frame{
+.frame {
     border-radius: 12px;
     border: 1px solid #222;
     padding: 1rem 0.6rem;
+}
+.modal-popup-bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #222222bc;
+}
+.modal-popup-content {
+    position: absolute;
+    max-width: 560px;
+    min-width: 80%;
+    left: 50%;
+    top: 50%;
+    padding: 1rem;
+    transform: translateX(-50%) translateY(-50%);
+    background-color: #e5e7eb;
+}
+.modal-popup-bg-hide {
+    display: none;
+}
+.modal-popup-bg-show {
+    display: block;
 }
 
 .profileImg{

@@ -83,6 +83,32 @@ function pageSetUp(app) {
             }
         })
     })
+    app.post('/activity/:id', async (req, res) => {
+        const [row] = await db.execute(
+            `SELECT * FROM Activities WHERE id=?`,
+            [req.params.id]
+        )
+        // alway convert date to string first
+        const sdt = new Date(row[0].start_date).toISOString().slice(0, 16)
+        const edt = new Date(row[0].end_date).toISOString().slice(0, 16)
+
+        const x = new Date(row[0].start_date).toDateString()// Thu Jul 31 2025
+        const y = new Date(row[0].start_date).toISOString() // 2025-07-30T17:00:00.000Z
+        console.log('DateStr: ' + x, ', ISO-Str: ' + y);
+
+        console.log(row[0]);
+
+        res.render('pages/activity', {
+            title: "activity",
+            active: 'activity',
+            style: "/styles/pages/activity.css",
+            data: {
+                ...row[0],
+                start_date: sdt,
+                end_date: edt
+            }
+        })
+    })
     app.get('/selflearn', async(req, res) => {
         // use node-fetch to get /api/courses
         try {
@@ -116,7 +142,7 @@ function pageSetUp(app) {
             const send = {
                 title: "self learn",
                 active: 'selflearn',
-                style: "/styles/pages/courses.css",
+                style: "/styles/pages/course.css",
                 courses, modules, asset, enroll
             }
             console.log(send);

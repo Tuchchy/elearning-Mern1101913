@@ -1,6 +1,7 @@
 const express = require('express')
 const engine = require('ejs-mate')
 const multer = require('multer')
+const path = require('path')
 const cookieParser = require('cookie-parser')
 /* import security module */
 // const helmet = require('helmet')
@@ -35,18 +36,37 @@ app.use(cors({
 app.use(express.static('public'))
 app.use(express.json())
 
+/**
+ * Multer storage configuration for handling file uploads.
+ *
+ * - Determines the upload destination based on the file's mimetype and request URL.
+ *   - Images are stored in `public/images/uploads`.
+ *   - Videos are stored in `public/videos/uploads`.
+ *   - PDFs are stored in `public/pdf/uploads`.
+ * - Further categorizes uploads into subfolders (`profiles`, `activities`, `courses`)
+ *   based on the request's original URL.
+ * - Filenames are prefixed with the current timestamp to ensure uniqueness.
+ *
+ * @constant
+ * @type {import('multer').StorageEngine}
+ */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         console.log('base url: ' + req.baseUrl.includes('activity'));// not work, 2 below work
         console.log('or this ' + req.path);
         console.log('or these ' + req.originalUrl);
-        let uploadPath = 'public/images/uploads'
-        if (req.originalUrl.includes('testform')) { // 🙌
-            uploadPath = 'public/images/uploads/profiles'
+        let uploadPath = 'public'
+
+        if (file.mimetype.startsWith('image/')) uploadPath += '/images/uploads'
+        else if (file.mimetype.startsWith('video/')) uploadPath += '/videos/uploads'
+        else if (file.mimetype === 'application/pdf') uploadPath += '/pdf/uploads'
+
+        if ((req.originalUrl.includes('register') || req.originalUrl.includes('profile')) && file.mimetype.startsWith('image/')) {
+            uploadPath += '/profiles'
         } else if (req.originalUrl.includes('activity')) { // will it have problem with /api/activity?
-            uploadPath = 'public/images/uploads/activities'
+            uploadPath += '/activities'
         } else if (req.originalUrl.includes('courses')) {
-            uploadPath = 'public/images/uploads/courses'
+            uploadPath += '/courses'
         }
         console.log(uploadPath);
         cb(null, uploadPath)
@@ -172,93 +192,115 @@ app.post('/logout', async (req, res) => {
 
 pageSetUp(app)
 
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
+
 app.use('/api/activity', activityRouter)
 app.use('/api/courses', coursesRouter)
 
 // button to add module, inside module have button to add assets
 // when submit it count all of it, except an empty form
-const { upload: uploadc } = require('./middlewares/uploadImgCourse')
-const db = require('./configs/db')
+// const { upload: uploadc } = require('./middlewares/uploadImgCourse')
+// const db = require('./configs/db')
+
+/*
 app.post('/api/courses', uploadc.array('poster'), async (req, res) => {
     // add multiple upload array
-    const conn = db.getConnection()
+    const conn = await db.getConnection()
     try {
-        (await conn).beginTransaction()
+        await conn.beginTransaction()
 
         const allowedCourseField = ['title', 'detail', 'imageUrl']
         const cfield = [] // req.body
-        const mfield = [] // req.body.modules
-        const afield = [] // req.body.modules.assets
+        const cvalue = []
 
         let rmrows
         let rarows
 
         let imageUrl = req?.file?.fieldname
-        if (!imageUrl) {
+        if (req?.files?.length > 0) {
+            imageUrl = `/images/uploads/courses/${req.files[0].filename}`
+        } else {
             imageUrl = `/images/uploads/courses/default${(Math.floor(Math.random() * 2) + 1)}.png`
         }
+        cfield.push('imageUrl')
+        cvalue.push(imageUrl)
 
         allowedCourseField.forEach(c => {
             if (req.body[c] != undefined) {
                 cfield.push(c)
+                cvalue.push(req.body[c])
             }
         });
 
         const [crows] = await db.execute(
-            `INSERT INTO Courses(${cfield.join(',')}) 
-             VALUES (${'?,'.repeat(cfield.length).slice(0,-1)})`,
-            [req.body.id, title, detail, imageUrl, 1]
+            `INSERT INTO Courses(${cfield.join(',')}, create_by) 
+             VALUES (${'?,'.repeat(cfield.length).slice(0,-1)}, ?)`,
+            [...cvalue, 1]
         )
+        const courseId = crows.insertId
 
         if (Array.isArray(req.body.modules)) {
             const allowedModuleField = ['course_id' ,'title', 'content_type', 'content', 'position']
         
             for (const module of req.body.modules) {
+                const mfield = [] // req.body.modules
+                const mvalue = []
 
-                 allowedModuleField.forEach(m => {
+                // let do ui first!
+                if (req.file) {
+                    console.log(req.file);
+                }
+
+                allowedModuleField.forEach(m => {
                     if (module[m] != undefined) {
                         mfield.push(m)
+                        mvalue.push(module[m])
                     }
                 });
                 
                 const [mrows] = await db.execute(
-                    `INSERT INTO CourseModules(${mfield.join(',')}) 
-                    VALUES (${'?,'.repeat(mfield.length).slice(0,-1)})`,
-                    [req.body.modules.id, title, detail, imageUrl, 1]
+                    `INSERT INTO CourseModules(course_id, ${mfield.join(',')}) 
+                    VALUES (?, ${'?,'.repeat(mfield.length).slice(0,-1)})`,
+                    [courseId ,...mfield]
                 )
                 rmrows = mrows
+                const moduleId = mrows.insertId
+
                 if (Array.isArray(module.assets)) {
                     const allowedAssetFields = ['cmid', 'title', 'asset_type', 'asset_url', 'is_download']
 
                     for (const asset of module.assets) {
+                        const afield = [] // req.body.modules.assets
+                        const avalue = []
                         
                         allowedAssetFields.forEach(a => {
                             if (asset[a] != undefined) {
                                 afield.push(a)
-                                // console.log(cfield,mfield,afield);
+                                avalue.push(asset[a])
+                                console.log(cfield,mfield,afield, avalue);
                             }
                         });
 
                         const [arows] = await db.execute(
-                            `INSERT INTO CourseModuleAssets(${afield.join(',')}) 
-                             VALUES (${'?,'.repeat(afield.length).slice(0,-1)})`,
-                            [title, detail, imageUrl, 1]
+                            `INSERT INTO CourseModuleAssets(cmid, ${afield.join(',')}) VALUES (?, ${'?,'.repeat(afield.length).slice(0,-1)})`,
+                            [moduleId, ...avalue]
                         )
                         rarows = arows
                     }
                 }
             }
         }
-        (await conn).commit()
+        await conn.commit()
         res.json({ message: 'course create successfull', create: {crows, rmrows, rarows} })
     } catch (error) {
         console.log(error);
-        (await conn).rollback()
+        await conn.rollback()
         res.status(500).json({ error })
     } finally {
         conn.release()
     }
-})
+})*/
 
 
 swaggerDocs(app)

@@ -22,8 +22,6 @@ async function getActivityById(req, res) {
 }
 
 async function createActivity (req, res) {
-    console.log('AT create /api/activity');
-
     const { title, content, detail, lecturer, start_date, end_date } = req.body
     const imageUrl = `/images/uploads/activities/${req.file.filename}`;
     try {
@@ -44,18 +42,18 @@ async function updateActivity (req, res) {
     const field = []
     const value = []
 
-    if (!req.file) {
-        console.log(`image isn't update, file: ${req.file}`);
-    } else {
+    if (req.file) {
         value.push(`/images/uploads/activities/${req.file.filename}`)
         field.push(`imageUrl=?`)
+    } else {
+        console.log(`image isn't update, file: ${req.file}`);
     }
 
     for (const key in req.body) {
         let t = req.body[key].trim()
         console.log(t);
         
-        if (t != '') { // nah i just get it from type 'forin'
+        if (t != '') {
             console.log(t);
             const element = req.body[key];
             value.push(element)
@@ -69,10 +67,21 @@ async function updateActivity (req, res) {
     }
 
     try {
-        console.log(
-            `UPDATE Activities SET ${field.join(',')} WHERE id=?`, 
-            [...value, req.params.id]
-        );
+        const [rows] = await db.execute( 
+            `SELECT * FROM Activities WHERE id=?`,
+            [req.params.id]
+        )
+        const oldImg = rows[0]?.imageUrl
+        if (req.file && oldImg) {
+            const fs = require('fs').promises
+            try {
+                await fs.unlink('public' + oldImg) 
+                console.log('public' + oldImg);
+                
+            } catch (error) {
+                console.log('Request File Error, Image: ', error);
+            }
+        }
 
         const [result] = await db.execute(
             `UPDATE Activities SET ${field.join(',')} WHERE id=?`,
@@ -81,24 +90,6 @@ async function updateActivity (req, res) {
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'Activities not exists' })
         }
-
-        // delete image file
-        debugger
-        const [rows] = await db.execute( // for get await get: TypeError: object is not iterable (cannot read property Symbol(Symbol.iterator))
-            `SELECT * FROM Users WHERE id=?`,
-            [req.params.id]
-        )
-        
-        const oldImg = rows[0]?.imageUrl
-        if (req.file && oldImg) {
-            const fs = require('fs').promises // the path of this file
-            try {
-                await fs.unlink('public' + oldImg) // fs start with this file path so it can go to /public, same as when node server.js
-            } catch (error) {
-                console.log('Request File Error, Image: ', error);
-            }
-        }
-
         console.log(result);
         res.json({ result })
     } catch (error) {

@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
 
-const { getCourses, getCourseById, updateCourse, deleteCourse } = require('../controllers/course.controller')
+const { getCourses, getCourseById, updateCourse, deleteCourse, createCourse } = require('../controllers/course.controller')
 const { upload } = require('../middlewares/uploadImgCourse')
 
 
 router.get('/', getCourses)
 router.get('/:id', getCourseById)
-// router.post('/')
+router.post('/', upload.any(), createCourse)
 router.patch('/:id', upload.single('cimg'), updateCourse)
 router.delete('/:id', deleteCourse)
 

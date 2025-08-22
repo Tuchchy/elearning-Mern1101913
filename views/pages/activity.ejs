@@ -11,25 +11,26 @@
 
 <section>
     <div class="section-container">
-        <h1>upload poster image</h1>
-        <form id="activityForm" data-id="<%- data.id %>">
-            <!-- FINISH THE UPDATE! -->
-            <input type="text" name="title" placeholder="<%- data?.title %>" >
-            <input type="text" name="content" placeholder="<%- data?.content %>">
-            <textarea name="detail" placeholder="<%- data?.detail %>"></textarea>
-            <input type="file" name="poster" accept="image/*">
-            <img src="<%- data?.imageUrl %>" alt="img" width="100px">
-            <input type="number" name="lecturer" placeholder="<%- data?.lecturer %>">
-            <input type="datetime-local" name="start_date" placeholder="<%- data?.start_date %>">
-            <input type="datetime-local" name="end_date" placeholder="<%- data?.end_date %>">
-            <button type="submit">Submit</button>
-        </form>
+        <div class="frame">
+            <h1>upload poster image</h1>
+            <form id="activityUpdate" data-id="<%- data.id %>" method="post">
+                <input type="text" name="title" placeholder="<%- data?.title %>" >
+                <input type="text" name="content" placeholder="<%- data?.content %>">
+                <textarea name="detail" placeholder="<%- data?.detail %>"></textarea>
+                <input type="file" name="poster" accept="image/*">
+                <img src="<%- data?.imageUrl %>" alt="img" width="100px">
+                <input type="number" name="lecturer" placeholder="<%- data?.lecturer %>">
+                <input type="datetime-local" name="start_date" placeholder="<%- data?.start_date %>">
+                <input type="datetime-local" name="end_date" placeholder="<%- data?.end_date %>">
+                <button type="submit">Submit</button>
+            </form>
+        </div>
     </div>
 </section>
 
 <script>
-    document.getElementById('activityForm').addEventListener('submit', async (e) => {
-        // e.preventDefault()
+    document.getElementById('activityUpdate').addEventListener('submit', async (e) => {
+        e.preventDefault()
         const form = e.target
         const id = form.dataset.id
         const formData = new FormData(form);
@@ -40,7 +41,7 @@
         });
 
         const data = await res.json();
-        console.log(data);
+        location.href = "/activity"
     });
 </script>
 

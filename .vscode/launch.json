@@ -19,11 +19,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "runtimeArgs": [
-                "--nolazy",
-                "--inspect-brk" // <-- ให้หยุดรอบรรทัดแรก
-            ],
-            "program": "${workspaceFolder}\\index.js"
+            "program": "${workspaceFolder}/index.js"
         }
     ]
 }

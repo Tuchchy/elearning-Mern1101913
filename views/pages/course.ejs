@@ -1,15 +1,13 @@
 <% layout('layout') %>
 
-<section>
-    <div class="section-container">
-        <div class="section-container">
-            <img src="<%- courses[0].imageUrl %>" alt="course image">
-            <h2><%- courses[0].title %></h2>
-            <p><%- courses[0].detail %></p>
-            <p>By <%- courses[0].create_by %></p>
-        </div>
-    </div>
-</section>
+<div class="page-decor">
+    <section class="course-header">
+        <img src="<%- courses.imageUrl %>" alt="course image">
+        <h2><%- courses.title %></h2>
+        <p><%- courses.detail %></p>
+        <p>By <%- courses.create_by %></p>
+    </section>
+</div>
 <!-- create form for post/update module/asset -->
 <!-- button to delete too -->
 <% modules.forEach(m => { %>
@@ -17,11 +15,10 @@
         <div class="section-container">
             <div class="section-container">
                 <div class="frame">
-                    <img src="<%- courses.imageUrl %>" alt="course image">
                     <h3><%- m.title %></h2>
                     <p><%- m.content %></p>
                     <% asset.forEach(a => { %>
-                        
+                        <a><%- a.asset_url %></a>
                     <% }); %>
                 </div>
             </div>
@@ -38,6 +35,7 @@
         </div>
     </div>
 </section>
+
 
 
 <script>

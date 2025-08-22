@@ -1,5 +1,12 @@
 const db = require('../configs/db')
 
+function withFullImageUrl(row, req) {
+    if (row.imageUrl && !row.imageUrl.startsWith('http')) {
+        row.imageUrl = `${req.protocol}://${req.get('host')}${row.imageUrl}`;
+    }
+    return row;
+}
+
 async function getCourses(req, res) {
     // query course, course module(count lesson)
     try {
@@ -7,9 +14,12 @@ async function getCourses(req, res) {
         if (!crows.length) {
             return res.status(404).json({ error: 'course not found' })
         }
+
+        const courses = crows.map(row => withFullImageUrl(row, req));
         const [mrows] = await db.execute('SELECT * FROM CourseModules')
 
-        res.json({ courses: crows, module: mrows })
+        console.log(`[API] get all courses`);
+        res.json({ courses, module: mrows })
     } catch (error) {
         console.log(error);
         res.status(500).json({ error })
@@ -23,6 +33,7 @@ async function getCourseById(req, res) {
         const [crows] = await db.execute('SELECT * FROM Courses WHERE id=?', [req.params.id])
         const [erows] = await db.execute('SELECT * FROM CourseEnrollments WHERE cid=?', [req.params.id])
 
+        const course = withFullImageUrl(crows[0], req);
         if (!crows.length) {
             return res.status(404).json({ error: 'course not found' })
         }
@@ -33,12 +44,14 @@ async function getCourseById(req, res) {
         }
 
         const send = {
-            courses: crows,
+            courses: course,
             modules: mrows,
             asset: arows,
             enroll: erows
         }
-        console.log('API: ', send);
+        // console.log(send);
+        
+        console.log(`[API] get course by id`);
         res.json(send)
 
     } catch (error) {
@@ -48,15 +61,91 @@ async function getCourseById(req, res) {
 }
 
 async function createCourse(req, res) {
-    const requiredField = ["code", "name", "credits", "semester", "description", "instructor"]
+    const conn = await db.getConnection();
+    try {
+        await conn.beginTransaction();
 
-    for (const rf of requiredField) {
-        if (!req.body[rf]) {
-            return res.status(400).json({ error: `${rf} is required` })
+        let rmrows, rarows;
+
+        // parse body
+        const { title, detail } = req.body;
+        let modules = [];
+        if (req.body.modules) {
+            modules = JSON.parse(req.body.modules); // string → object
         }
-    }
 
-    res.json({ message: "add courses success" })
+        // course image
+        let imageUrl;
+        const poster = req.files.find((f) => f.fieldname === "poster");
+        if (poster) {
+            imageUrl = `/images/uploads/courses/${poster.filename}`;
+        } else {
+            imageUrl = `/images/uploads/courses/default${Math.floor(Math.random() * 2) + 1}.png`;
+        }
+
+        // insert course
+        const [crows] = await conn.execute(
+            `INSERT INTO Courses(title, detail, imageUrl, create_by) VALUES (?,?,?,?)`,
+            [title, detail, imageUrl, 1]
+        );
+        const courseId = crows.insertId;
+
+        // modules loop
+        for (let mIndex = 0; mIndex < modules.length; mIndex++) {
+            const module = modules[mIndex];
+
+            // ถ้าเป็น file → หาไฟล์จาก req.files
+            if (module.content_type === "file") {
+                const file = req.files.find(
+                    (f) => f.fieldname === `moduleFiles[${mIndex}]`
+                );
+                if (file) {
+                    module.content = `/images/uploads/courses/${file.filename}`;
+                }
+            }
+
+            const [mrows] = await conn.execute(
+                `INSERT INTO CourseModules(course_id, title, content_type, content) VALUES (?,?,?,?)`,
+                [courseId, module.title, module.content_type, module.content]
+            );
+            rmrows = mrows;
+            const moduleId = mrows.insertId;
+
+            // assets loop
+            if (Array.isArray(module.assets)) {
+                for (let aIndex = 0; aIndex < module.assets.length; aIndex++) {
+                    const asset = module.assets[aIndex];
+
+                    if (asset.asset_type === "file") {
+                        const file = req.files.find(
+                            (f) => f.fieldname === `assetFiles[${mIndex}][${aIndex}]`
+                        );
+                        if (file) {
+                            asset.asset_url = `/images/uploads/courses/${file.filename}`;
+                        }
+                    }
+
+                    const [arows] = await conn.execute(
+                        `INSERT INTO CourseModuleAssets(cmid, asset_type, asset_url, is_download) VALUES (?,?,?,?)`,
+                        [moduleId, asset.asset_type, asset.asset_url, asset.is_download ? 1 : 0]
+                    );
+                    rarows = arows;
+                }
+            }
+        }
+
+        await conn.commit();
+        res.json({
+            message: "course create successful",
+            create: { crows, rmrows, rarows },
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        await conn.rollback();
+        res.status(500).json({ error: error.message });
+    } finally {
+        conn.release();
+    }
 }
 
 async function updateCourse(req, res) {
@@ -82,7 +171,7 @@ async function updateCourse(req, res) {
                 `UPDATE Courses SET ${courseFields.join(', ')} WHERE id = ?`,
                 [...courseValues, req.params.id]
             );
-            console.log('Update Courses');
+            // console.log('Update Courses');
         }
 
         // check .modules in json
@@ -106,7 +195,7 @@ async function updateCourse(req, res) {
                         `UPDATE CourseModules SET ${moduleFields.join(', ')} WHERE id = ? AND course_id = ?`,
                         [...moduleValues, module.id, req.params.id]
                     );
-                    console.log('Update CourseModules');
+                    // console.log('Update CourseModules');
                 }
 
                 // iterate asset in .modules, then update
@@ -128,7 +217,7 @@ async function updateCourse(req, res) {
                                 `UPDATE CourseModuleAssets SET ${assetFields.join(', ')} WHERE id = ? AND cmid = ?`,
                                 [...assetValues, asset.id, module.id]
                             );
-                            console.log('Update CourseModuleAssets');
+                            // console.log('Update CourseModuleAssets');
                         }
                     }
                 }
@@ -136,6 +225,7 @@ async function updateCourse(req, res) {
         }
 
         await conn.commit();
+        console.log(`[API] update courses by id`);
         res.json({ message: 'Update successful' });
 
     } catch (error) {
@@ -151,12 +241,12 @@ async function deleteCourse(req, res) {
     try {
         const [result] = await db.execute('DELETE FROM Courses WHERE id=?', [req.params.id])
         if (result.affectedRows == 0) {
-            res.status(404).json({message: "course not exists"})
+            res.status(404).json({ message: "course not exists" })
         }
-        console.log('delete succcess');
-        res.json({result})
+        console.log(`[API] delete course by id`);
+        res.json({ result })
     } catch (error) {
-        res.status(500).json({error})
+        res.status(500).json({ error })
     }
 }
 

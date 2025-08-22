@@ -2,14 +2,20 @@
 
 <section>
     <div class="section-container">
-        <h2>Activity</h2>
+        <div class="content-between">
+            <h2>Activity</h2>
+            <button class="createActivity">add</button>
+        </div>
         <ul id="activity-list" class="card-list"></ul>
     </div>
 </section>
 
-<section>
-    <div class="section-container">
-        <h1>upload poster image</h1>
+<div class="modal-popup-bg modal-popup-bg-hide" id="form-popup">
+    <div class="modal-popup-content">
+        <div class="content-between">
+            <h1>upload poster image</h1>
+            <button class="createActivity">X</button>
+        </div>
         <form id="activityForm" method="post">
             <!-- add default value from EJS render -->
             <input type="text" name="title" value="<%- data?.title %>" placeholder="title" required>
@@ -25,11 +31,13 @@
             <button type="submit">Submit</button>
         </form>
     </div>
-</section>
+</div>
+
 
 <script>
+    const popup = document.getElementById('form-popup')
     document.getElementById('activityForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         const formData = new FormData(e.target);
 
         const res = await fetch('/api/activity', {
@@ -40,6 +48,13 @@
         const data = await res.json();
         console.log(data);
     });
+
+    document.querySelectorAll('.createActivity').forEach((btn,i) => {
+        btn.addEventListener('click', async(e)=>{
+            popup.classList.toggle('modal-popup-bg-show')
+            popup.classList.toggle('modal-popup-bg-hide')
+        })
+    })
 </script>
 
 <script>

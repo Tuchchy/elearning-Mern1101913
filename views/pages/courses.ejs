@@ -11,7 +11,7 @@
                     <input type="text" placeholder="searching bar">
                     <input type="submit" value="search">
                 </form>
-                <button>Add</button>
+                <button class="createCourse">Add</button>
             </div>
         </div>
         
@@ -33,22 +33,51 @@
     </div>
 </section>
 
-<section>
-    <div class="section-container">
-        <div class="frame">
-            <form id="add-course" method="post">
-                <h3>add course</h3>
+<div class="modal-popup-bg modal-popup-bg-hide" id="form-popup">
+    <div class="modal-popup-content">
+        <button class="createCourse">X</button>
+        <form id="add-course" method="post">
+            <h3>add course</h3>
+            <input type="text" name="title" placeholder="title">
+            <input type="text" name="detail" placeholder="detail">
+            <input type="file" name="poster" placeholder="image">
+            <input type="submit" value="add">
+        </form>
+        <button class="add-module">add module</button>
+        <div class="form-module">
+            <form>
                 <input type="text" name="title" placeholder="title">
-                <input type="text" name="detail" placeholder="detail">
-                <input type="file" name="poster" placeholder="image">
-                <input type="submit" value="add">
+                <select name="content-type">
+                    <option value="image">image</option>
+                    <option value="video">video</option>
+                    <option value="pdf">pdf</option>
+                    <option value="text">text</option>
+                    <option value="url">url</option>
+                </select>
+            </form>
+
+        </div>
+        <div class="form-asset">
+            <form>
+                <input type="text" name="title" placeholder="title">
+                <select name="asset-type">
+                    <option value="image">image</option>
+                    <option value="video">video</option>
+                    <option value="pdf">pdf</option>
+                    <option value="text">text</option>
+                    <option value="url">url</option>
+                </select>
             </form>
         </div>
         
+        
     </div>
-</section>
+</div>
 
 <script>
+    const popup = document.getElementById('form-popup')
+    const formModule = document.querySelector('.form-module')
+    const formAsset = document.querySelector('.form-asset')
     document.getElementById('add-course').addEventListener('submit', async(e)=>{
         e.preventDefault()
         const formData = new FormData(e.target)
@@ -60,6 +89,30 @@
 
         const data = await res.json()
         console.log(data);
-        
+    })
+
+    document.querySelectorAll('.createCourse').forEach((btn,i) => {
+        btn.addEventListener('click', async(e)=>{
+            popup.classList.toggle('modal-popup-bg-show')
+            popup.classList.toggle('modal-popup-bg-hide')
+        })
+    })
+    
+    document.querySelectorAll('.add-module').forEach((btn,i)=> {
+        btn.addEventListener('click', async(e)=>{
+            formModule.innerHTML += `
+            
+            <button class="add-asset">+</button>
+            `
+        })
+    })
+
+    document.querySelectorAll('.add-asset').forEach((btn,i) => {
+        btn.addEventListener('click', async(e)=>{
+            formModule[i].innerHTML += `
+            <div class="form-asset">
+            </div>
+            `
+        })
     })
 </script>

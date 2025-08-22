@@ -1,0 +1,78 @@
+/* Background wrapper for the whole page */
+.page-decor {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 2rem 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card-style module container */
+.module-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.module-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+/* For course header */
+.course-header {
+    text-align: center;
+}
+.course-header img {
+    max-width: 280px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.course-header h2 {
+    margin-top: 1rem;
+    font-size: 2rem;
+    color: #222;
+}
+.course-header p {
+    max-width: 700px;
+    margin: 0.5rem auto;
+    color: #555;
+}
+
+/* Asset gallery inside module */
+.asset-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.asset-gallery img {
+    max-width: 150px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Button group for module actions */
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.btn-action {
+    background-color: #007bff;
+    border: none;
+    padding: 0.6rem 1rem;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-action:hover {
+    background-color: #0056b3;
+}
+.btn-delete {
+    background-color: #dc3545;
+}
+.btn-delete:hover {
+    background-color: #a71d2a;
+}
